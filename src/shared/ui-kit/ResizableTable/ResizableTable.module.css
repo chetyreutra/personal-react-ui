@@ -1,0 +1,43 @@
+.table {
+  display: grid;
+  max-width: 600px;
+  overflow: auto;
+  align-items: start;
+}
+
+.table thead,
+.table tbody,
+.table tr {
+  display: contents;
+}
+
+.tableHeader {
+  position: relative;
+}
+
+.resizeTool {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-right: 4px solid green;
+  height: 100%;
+  cursor: col-resize;
+  transition: border-color 0.2s ease 0s;
+}
+
+.resizeTool:hover {
+  border-color: lightgreen;
+}
+
+.resizeTool.active {
+  border-color: darkgreen;
+}
+
+.table th,
+.table td {
+  text-align: start;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: block;
+}
