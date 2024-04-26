@@ -7,50 +7,37 @@ import {
   useEffect,
 } from "react";
 
-export const useResizableTable = ({
+type UseResizableTableParams<T> = {
+  readonly minCellWidth: number;
+  readonly headers: T[];
+};
+
+export const useResizableTable = <T extends Record<string, string>>({
   minCellWidth,
-}: {
-  minCellWidth: number;
-}) => {
-  const columns = useMemo(
-    () => [
-      {
-        header: "Продукт",
-        contents: ["Банан", "Яблоко", "Груша", "Апельсин"],
+  headers,
+}: UseResizableTableParams<T>) => {
+  const headersWithRefs = useMemo(
+    () =>
+      headers.map((header) => ({
+        ...header,
         ref: createRef<HTMLTableCellElement>(),
-      },
-      {
-        header: "ID заказа",
-        contents: ["12345", "12345", "12345", "12345"],
-        ref: createRef<HTMLTableCellElement>(),
-      },
-      {
-        header: "Статус",
-        contents: [
-          "Готов к получению",
-          "Готов к получению",
-          "Готов к получению",
-          "Готов к получению",
-        ],
-        ref: createRef<HTMLTableCellElement>(),
-      },
-    ],
-    []
+      })),
+    [headers]
   );
 
   const tableRef = useRef<HTMLTableElement | null>(null);
 
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeKey, setActiveKey] = useState<number | null>(null);
 
-  const mouseDown = (index: number) => setActiveIndex(index);
+  const startResize = (index: number) => setActiveKey(index);
 
-  const mouseUp = () => setActiveIndex(null);
+  const endResize = () => setActiveKey(null);
 
   const mouseMove = useCallback(
     (event: MouseEvent) => {
-      const gridColumns = columns.map((column, index) => {
-        if (index === activeIndex && column.ref.current) {
-          const width = event.clientX - column.ref.current.offsetLeft;
+      const gridColumns = headersWithRefs.map(({ ref }, index) => {
+        if (index === activeKey && ref.current) {
+          const width = event.clientX - ref.current.offsetLeft;
 
           if (width > minCellWidth) {
             return `${width}px`;
@@ -64,20 +51,20 @@ export const useResizableTable = ({
         tableRef.current.style.gridTemplateColumns = `${gridColumns.join(" ")}`;
       }
     },
-    [activeIndex, columns, minCellWidth]
+    [activeKey, headersWithRefs, minCellWidth]
   );
 
   useEffect(() => {
-    if (activeIndex !== null) {
-      window.addEventListener("mouseup", mouseUp);
+    if (activeKey !== null) {
+      window.addEventListener("mouseup", endResize);
       window.addEventListener("mousemove", mouseMove);
     }
 
     return () => {
-      window.removeEventListener("mouseup", mouseUp);
+      window.removeEventListener("mouseup", endResize);
       window.removeEventListener("mousemove", mouseMove);
     };
-  }, [activeIndex, mouseMove]);
+  }, [activeKey, mouseMove]);
 
-  return { tableRef, columns, mouseDown, activeIndex };
+  return { tableRef, headersWithRefs, startResize, activeKey };
 };

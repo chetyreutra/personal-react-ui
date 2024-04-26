@@ -1,14 +1,26 @@
 import styles from "./ResizableTable.module.css";
 import { useResizableTable } from "./model";
 
+type Cell = readonly [string, string];
+
+type Row = readonly [string, Cell[]];
+
 type ResizableTableProps = {
+  readonly headers: { readonly key: string; readonly value: string }[];
+  readonly rows: Row[];
   readonly minCellWidth: number;
 };
 
-export const ResizableTable = ({ minCellWidth }: ResizableTableProps) => {
-  const { tableRef, columns, mouseDown, activeIndex } = useResizableTable({
-    minCellWidth,
-  });
+export const ResizableTable = ({
+  headers,
+  rows,
+  minCellWidth,
+}: ResizableTableProps) => {
+  const { tableRef, headersWithRefs, startResize, activeKey } =
+    useResizableTable({
+      minCellWidth,
+      headers,
+    });
 
   return (
     <table
@@ -20,17 +32,13 @@ export const ResizableTable = ({ minCellWidth }: ResizableTableProps) => {
     >
       <thead>
         <tr>
-          {columns.map((column, index) => (
-            <th
-              ref={column.ref}
-              className={styles.tableHeader}
-              key={column.header}
-            >
-              <span>{column.header}</span>
+          {headersWithRefs.map(({ key, value, ref }, index) => (
+            <th ref={ref} className={styles.tableHeader} key={key}>
+              <span>{value}</span>
               <div
-                onMouseDown={() => mouseDown(index)}
+                onMouseDown={() => startResize(index)}
                 className={`${styles.resizeTool} ${
-                  activeIndex === index ? styles.active : ""
+                  activeKey === index ? styles.active : ""
                 }`}
               />
             </th>
@@ -38,26 +46,13 @@ export const ResizableTable = ({ minCellWidth }: ResizableTableProps) => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Товар 1</td>
-          <td>5531234</td>
-          <td>Готов к получению</td>
-        </tr>
-        <tr>
-          <td>Товар 2</td>
-          <td>5531234</td>
-          <td>Готов к получению</td>
-        </tr>
-        <tr>
-          <td>Товар 3</td>
-          <td>5531234</td>
-          <td>Готов к получению</td>
-        </tr>
-        <tr>
-          <td>Товар 4</td>
-          <td>5531234</td>
-          <td>Готов к получению</td>
-        </tr>
+        {rows.map(([id, cells]) => (
+          <tr key={id}>
+            {cells.map(([key, value]) => (
+              <td key={key}>{value}</td>
+            ))}
+          </tr>
+        ))}
       </tbody>
     </table>
   );
