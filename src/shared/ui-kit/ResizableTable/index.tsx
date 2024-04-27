@@ -1,12 +1,11 @@
 import styles from "./ResizableTable.module.css";
 import { useResizableTable } from "./model";
 
-type Cell = readonly [string, string];
-
-type Row = readonly [string, Cell[]];
+type Cell = { readonly key: string; readonly value: string };
+type Row = { readonly key: string; readonly cells: Cell[] };
 
 type ResizableTableProps = {
-  readonly headers: { readonly key: string; readonly value: string }[];
+  readonly headers: Cell[];
   readonly rows: Row[];
   readonly minCellWidth: number;
 };
@@ -32,13 +31,13 @@ export const ResizableTable = ({
     >
       <thead>
         <tr>
-          {headersWithRefs.map(({ key, value, ref }, index) => (
+          {headersWithRefs.map(({ key, value, ref }) => (
             <th ref={ref} className={styles.tableHeader} key={key}>
               <span>{value}</span>
               <div
-                onMouseDown={() => startResize(index)}
+                onMouseDown={() => startResize(key)}
                 className={`${styles.resizeTool} ${
-                  activeKey === index ? styles.active : ""
+                  activeKey === key ? styles.active : ""
                 }`}
               />
             </th>
@@ -46,9 +45,9 @@ export const ResizableTable = ({
         </tr>
       </thead>
       <tbody>
-        {rows.map(([id, cells]) => (
-          <tr key={id}>
-            {cells.map(([key, value]) => (
+        {rows.map(({ key, cells }) => (
+          <tr key={key}>
+            {cells.map(({ key, value }) => (
               <td key={key}>{value}</td>
             ))}
           </tr>
