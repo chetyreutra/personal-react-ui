@@ -1,5 +1,6 @@
 import styles from "./ResizableTable.module.css";
 import { useResizableTable } from "./model";
+import cx from "classnames";
 
 type Cell = { readonly key: string; readonly value: string };
 type Row = { readonly key: string; readonly cells: Cell[] };
@@ -36,9 +37,9 @@ export const ResizableTable = ({
               <span>{value}</span>
               <div
                 onMouseDown={() => startResize(key)}
-                className={`${styles.resizeTool} ${
-                  activeKey === key ? styles.active : ""
-                }`}
+                className={cx(styles.resizeTool, {
+                  [styles.active]: activeKey === key,
+                })}
               />
             </th>
           ))}
