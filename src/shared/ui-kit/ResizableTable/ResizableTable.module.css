@@ -15,11 +15,15 @@
   position: relative;
 }
 
+.tableHeader:hover .resizeTool {
+  border-color: green;
+}
+
 .resizeTool {
   position: absolute;
   top: 0;
   right: 0;
-  border-right: 4px solid green;
+  border-right: 4px solid transparent;
   height: 100%;
   cursor: col-resize;
   transition: border-color 0.2s ease 0s;

@@ -1,34 +1,23 @@
 import { ResizableTable } from "../../shared/ui-kit/ResizableTable";
 import styles from "./Home.module.css";
 
+const data = [
+  { id: 1, name: "Футболка", status: "Готов", price: "100", size: "L" },
+  { id: 2, name: "Штаны", status: "Готов", price: "500", size: "M" },
+  { id: 3, name: "Шорты", status: "Готов", price: "200", size: "S" },
+];
+
 export const Home = () => (
   <div className={styles.card}>
     <div>Resizable table</div>
     <ResizableTable
       headers={[
-        { key: "1", value: "Продукт" },
-        { key: "2", value: "Айди" },
-        { key: "3", value: "Статус" },
+        { key: "name", value: "Продукт" },
+        { key: "status", value: "Статус" },
+        { key: "size", value: "Размер" },
+        { key: "price", value: "Цена" },
       ]}
-      rows={[
-        {
-          key: "1",
-          cells: [
-            {
-              key: "name",
-              value: "Товар 1",
-            },
-            {
-              key: "id",
-              value: "Айди 1",
-            },
-            {
-              key: "status",
-              value: "Готов 1",
-            },
-          ],
-        },
-      ]}
+      rows={data}
       minCellWidth={100}
     />
   </div>
