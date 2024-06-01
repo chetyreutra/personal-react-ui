@@ -31,6 +31,7 @@ export const ResizableTable = <T extends RowItemShape>({
   const [cellsOrder, setCellsOrder] = useState(() =>
     headers.map((header) => header.key),
   );
+
   useEffect(() => {
     const persistedCellsOrder = localStorage.getItem('cellsOrder');
     if (persistedCellsOrder) {
@@ -38,6 +39,7 @@ export const ResizableTable = <T extends RowItemShape>({
       setCellsOrder(parsed);
     }
   }, []);
+
   const headersWithRefsDict = useMemo(
     () =>
       headers.reduce<{
@@ -57,10 +59,15 @@ export const ResizableTable = <T extends RowItemShape>({
       ),
     [headers],
   );
+
   const tableRef = useRef<HTMLTableElement | null>(null);
+
   const [activeKey, setActiveKey] = useState<Header['key'] | null>(null);
+
   const startResize = (index: Header['key']) => setActiveKey(index);
+
   const endResize = () => setActiveKey(null);
+
   const mouseMove = useCallback(
     (event: MouseEvent) => {
       const gridColumns = cellsOrder.map((key) => {
@@ -82,6 +89,7 @@ export const ResizableTable = <T extends RowItemShape>({
     },
     [activeKey, headersWithRefsDict, minCellWidth],
   );
+
   useEffect(() => {
     if (activeKey !== null) {
       window.addEventListener('mouseup', endResize);
