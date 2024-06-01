@@ -3,6 +3,10 @@
   width: 600px;
   overflow: auto;
   align-items: start;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  border: 1px solid #e3e3e3;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
 }
 
 .table thead,
@@ -11,15 +15,11 @@
   display: contents;
 }
 
-.tableHeader {
+.header {
   position: relative;
 }
 
-.tableHeader:hover .resizeTool {
-  border-color: green;
-}
-
-.resizeTool {
+.resize {
   position: absolute;
   top: 0;
   right: 0;
@@ -29,11 +29,15 @@
   transition: border-color 0.2s ease 0s;
 }
 
-.resizeTool:hover {
+.resize:hover {
   border-color: lightgreen;
 }
 
-.resizeTool.active {
+.header:hover .resize {
+  border-color: green;
+}
+
+.resize.active {
   border-color: darkgreen;
 }
 
